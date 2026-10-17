@@ -4,6 +4,7 @@
 任何一条不过，就不算交付。不要自己放水——这是 vibe coding 项目 90% 翻车的地方。
 
 ## 1. 验收对照（来自 05-需求分层.md）
+- [ ] 跑过机器自检：`bash <本skill目录>/scripts/validate.sh ./<产品名> --expect 交付包`，全部通过
 - [ ] 每个 Must have 用户故事的 acceptance criteria 都逐条验证过
 - [ ] 输出了一份验收对照表：每条 criteria → 实际结果（通过/未通过 + 证据）
 - [ ] 没有偷偷加 Must 以外的功能（发现一条就移到 `backlog.md`）
