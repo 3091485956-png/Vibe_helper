@@ -1,0 +1,12 @@
+{
+  "name": "vibe-helper",
+  "description": "从一句话产品想法到可直接开工的交付包：全流程 orchestrator + 5 个单点 PM skill（产品 Brief / 竞品调研 / 用户声音 / 需求分层 / 技术框架）",
+  "version": "0.3.0",
+  "author": {
+    "name": "3091485956-png"
+  },
+  "homepage": "https://github.com/3091485956-png/Vibe_helper",
+  "repository": "https://github.com/3091485956-png/Vibe_helper",
+  "license": "MIT",
+  "keywords": ["product-management", "pm", "vibe-coding", "prd", "competitive-analysis", "user-research"]
+}

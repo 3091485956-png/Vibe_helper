@@ -1,25 +1,83 @@
-# Vibe Helper
+<div align="center">
 
-> 从"一句话产品想法"到"一整套可直接开工的交付物"——面向产品经理(和想自己做个产品的 vibe coder)的产品雏形助手(Agent Skill)。
+# 🎯 Vibe Helper
 
-你只需要丢给 agent 一句话点子,Vibe Helper 会带你结构化走完:**需求访谈 → 产品 Brief → 竞品调研 → 用户声音挖掘 → 需求分层 → 产品/技术框架 → 静态原型确认 → 交接落地**,全程在关键节点停下等你确认,并在调研后敢劝你"别做了"。
+**从「一句话产品想法」到「一整套可直接开工的交付包」**
 
-**本 skill 的终点是交付包(全套文档 + 高保真可点原型 + 验收标准),不直接生成最终产品代码**——Stage 8 把材料交接给下游建站/全栈 skill 或你的开发团队。
+面向产品经理与 vibe coder 的 Agent Skill 套件 · 全程中文
 
-## 它解决什么问题
+[![version](https://img.shields.io/badge/version-0.3-blue)]()
+[![skills](https://img.shields.io/badge/skills-1%20%E5%85%A8%E6%B5%81%E7%A8%8B%20%2B%205%20%E5%8D%95%E7%82%B9-8A2BE2)]()
+[![commands](https://img.shields.io/badge/slash%20commands-7-ff6b35)]()
+[![license](https://img.shields.io/badge/license-MIT-green)]()
+[![stars](https://img.shields.io/github/stars/3091485956-png/Vibe_helper)](https://star-history.com/#3091485956-png/Vibe_helper&Date)
 
-PM 做新产品和 vibe coding 有几种高度重合的死法,这个 skill 逐条对症:
+</div>
 
-| 常见死法 | Vibe Helper 的对策 |
+---
+
+你只需要丢给 agent 一句话——*"我想做一个叫 X 的产品"*。Vibe Helper 会带你结构化走完 **需求访谈 → 产品 Brief → 竞品调研 → 用户声音 → 需求分层 → 产品/技术框架 → 静态原型 → 交接落地**，在关键节点停下等你确认，并在调研后敢劝你 **"别做了"**。
+
+**它的终点是交付包**（全套文档 + 高保真可点原型 + Gherkin 验收标准），直接交给开发或下游 skill 开工——而不是 demo 一晒就扔。
+
+## 🧩 套件组成 · 1 + 5
+
+| | Skill | 干什么 | 直达命令 | 触发它，当用户说 |
+| --- | --- | --- | --- | --- |
+| 🎯 | **Vibe_helper** | 8 阶段全流程一条龙 | `/vibe` | "帮我从零开始做个产品" |
+| 📝 | **product-brief** | Mom Test 问卷 + 产品 Brief | `/vibe-brief` | "帮我把这个 idea 整理成文档" |
+| 🔍 | **competitive-analysis** | 竞品与开源调研 + 对标选择 | `/vibe-competitive` | "这想法有没有人做过" |
+| 🗣️ | **user-voice** | 用户声音挖掘 + 需求真伪初判 | `/vibe-voice` | "这个需求是真的吗" |
+| 📋 | **requirements-layering** | MoSCoW + Gherkin 验收 + RICE | `/vibe-req` | "帮我做 MVP 分层和验收标准" |
+| 🏗️ | **tech-framework** | 最薄一刀 + 产品/技术框架 | `/vibe-tech` | "帮我选技术栈、设计架构" |
+
+全流程与单点读写**同一套编号文件**：跑一半可切出，单点产出也能被全流程复用。每个 skill 文件夹自包含，单独拷走任何一个都能用。
+
+## 🛡️ 它治什么病
+
+PM 做新产品和 vibe coding 的六种死法，逐条对症（每个 M 编号在 SKILL.md 里有对应机制）：
+
+| 死法 | 对策 |
 | --- | --- |
-| 一句话直接开写,做出来根本不是想要的 | 先问卷访谈 + 产品 Brief,⛔ 确认后才动 |
-| 做到一半发现竞品早就免费覆盖了这个需求 | 动手前先做 GitHub + 全网竞品调研 |
-| 需求只存在于自己脑子里,公开渠道零讨论 | 挖竞品差评和目标用户真实帖子,假的直接劝退 |
-| MVP 越做越大,第二周开始加支付/通知,第一周的代码全被改坏 | MoSCoW 分层 + 范围守卫:新想法一律进 backlog |
-| 视觉返工,写完代码才发现"我要的不是这样" | 先画高保真静态原型,⛔ 点过确认再写真代码 |
-| demo 一晒就扔:空状态、报错、密钥、部署全没有 | 交付前必过 checklist,验收标准逐条打勾 |
+| **M1** 一句话直接开写，做出来根本不是想要的 | 问卷 + Brief，⛔ 确认后才动 |
+| **M2** 需求只在脑子里，理解从未被确认 | Brief 确认门，最多 3 轮修正 |
+| **M3** demo 一晒就扔：空状态/报错/密钥/部署全没有 | 交付 checklist + 机器自检脚本 |
+| **M4** MVP 越做越大，中途加功能改坏旧代码 | 范围守卫：新想法一律进 `backlog.md` |
+| **M5** 明知没人要还硬做 | 调研后决策门：拿证据劝退 |
+| **M6** 先画 UI 后定数据层，全部返工 | 最薄一刀 + 严格依赖顺序 |
 
-## 工作流程
+## ✨ 核心机制
+
+- **⛔ 四道确认门**：Brief、需求范围、静态原型、交付 checklist——方向错了后面全白做，agent 不得自行跳过
+- **敢说「别做了」**：3 个以上成熟免费竞品覆盖需求 / 公开渠道零讨论 / 技术跑不通 → 拿证据明说
+- **🔶 对标你拍板**：调研后给名单 + 重点推荐 + 理由，确认的集合成为后续所有阶段的锚
+- **Mom Test 访谈**：问过去的真实行为（"上次遇到是什么时候、怎么解决的"），不问未来意愿（"你会用吗"）
+- **Gherkin 验收标准 + RICE**：每条 Must 带 ≥2 个 Given/When/Then 场景（必含非正常路径），内部按（触达×影响×信心）/工作量排序
+- **零幻觉纪律**：论断标注 [实证/推断/假设]；链接必须本轮真实打开，数字不许凭记忆；调研文档强制写"本轮盲区"；编造即整段作废
+- **三档深度**：快速 / 标准 / 深度——周末小工具不被重流程吓跑，认真创业也能做深；⛔ 门任何档位不缩水
+- **中途进入**：已有产出自动复用，拿着现成 brief 来直接从竞品调研开跑
+
+## 🚀 安装
+
+**Claude Code（插件市场，推荐）**
+
+```
+/plugin marketplace add 3091485956-png/Vibe_helper
+/plugin install vibe-helper@vibe-helper
+```
+
+**ZCode 等（安装脚本，装到 `~/.agents/skills/`）**
+
+```bash
+git clone https://github.com/3091485956-png/Vibe_helper.git
+cd Vibe_helper && bash scripts/install.sh
+```
+
+**手动**：把 `skills/` 下任意 skill 文件夹拷进你的技能目录即可；slash 命令可选装：`bash scripts/install.sh --commands`
+
+装好后自然语言即可触发；ZCode 也支持 `/Vibe_helper`、`/competitive-analysis` 直呼。
+
+## 📖 工作流程
 
 ```mermaid
 flowchart LR
@@ -36,107 +94,82 @@ flowchart LR
     S8 --> D[交付前 Checklist]
 ```
 
-标 ⛔ 的节点必须停下等用户明确确认,agent 不得自行跳过;标 🔶 的选择点必须摆出选项、推荐与理由,由用户一句话拍板(认可/增删/"你定")。
-
-**八个阶段与产出物:**
-
-| 阶段 | 做什么 | 产出 |
-| --- | --- | --- |
-| 1 · 需求访谈 | 结构化问卷补齐产品背景,模糊处追问 1–2 轮 | `01-问卷.md` |
-| 2 · 提示词打磨 ⛔ | 重写成陌生工程师也能看懂的产品 Brief | `02-brief.md` |
-| 3 · 竞品与开源调研 🔶 | GitHub 多关键词交叉 + Product Hunt 等,看 top 10–20;汇报参照名单+重点对标推荐,用户拍板 | `03-竞品分析.md`(含确认对标集合) |
-| 4 · 用户声音挖掘 | 竞品差评/好评 + Reddit/HN/知乎/V2EX 真实讨论 | `04-用户声音.md` |
-| — · 决策门 | 赛道已死 / 需求是假的 / 技术不可行 → 拿证据劝退 | 明确建议 |
-| 5 · 需求分层 ⛔ | MoSCoW 切 MVP/二期/远期,每条 Must 带 ≥2 条可测验收标准 | `05-需求分层.md` |
-| 6 · 框架输出 | 先写"最薄一刀"端到端路径,再展开产品框架与技术选型 | `06-产品框架.md` `07-技术框架.md` |
-| 7 · 静态原型 ⛔ | 高保真可点击静态 HTML,浏览器里点一遍再确认 | `prototypes/` |
-| 8 · 交接落地 | 把交付包交给下游 skill 或开发团队;范围守卫 + 交付 checklist 逐条打勾 | 交接指令 + 验收对照表 |
-
-## 核心机制
-
-- **四个强制确认门(⛔)**:Brief、需求范围、静态原型、交付 checklist——产品方向错了,后面全白做。
-- **敢说"别做了"**:调研发现 3 个以上成熟免费竞品覆盖了需求、或公开渠道零讨论、或关键技术跑不通,就明说并给证据,不陪用户硬做一个注定没人用的东西。
-- **对标由用户拍板(🔶)**:竞品调研不止交报告——汇报实际参照了哪些竞品、推荐重点对标哪 2–3 个及理由、哪些不推荐及原因;用户增删确认后,这个集合成为 Stage 4–6 评论挖掘、功能对比、差异化定位的锚。
-- **零幻觉/反自嗨纪律**:事实论断一律标注 [实证]/[推断]/[假设];链接必须本轮真实打开过,数字不许凭记忆,查不到就明说"本轮未获取";每份调研文档末尾强制写"本轮盲区";产出物不许自我评价。编造链接/数据/原话,该段作废重做。
-- **最薄一刀**:一句话说清"一个用户做一件最小的事,从打开到看到结果",这是最先打通的端到端路径;写不出它 = 还没想清楚 MVP。
-- **验收驱动**:每条 Must have 功能带可验证的 acceptance criteria(至少一条覆盖空/错/边界),写完代码逐条对照打勾,不是"感觉差不多"就交付。
-- **范围守卫**:开发中途冒出的任何新功能一律追加进 `backlog.md` 放二期,不许直接做。
-- **机器自检**:自带 `scripts/validate.sh`,⛔ 门放行与交付前由 agent 运行——文档齐全、每条 Must ≥2 条不含模糊词的验收标准、调研文档含盲区小节、原型无死链,脚本不过不算过。
-
-## 产出目录结构
-
-每个项目会在你的工作目录生成:
+每个项目都会生成一套完整交付物：
 
 ```
 ./你的产品名/
-├── 01-问卷.md          # 访谈原始答案
-├── 02-brief.md         # 产品 Brief(定位/用户/痛点/边界)
-├── 03-竞品分析.md      # 竞品清单 + 对本产品的启发
-├── 04-用户声音.md      # 机会点/价值点/空白点(附出处链接)
-├── 05-需求分层.md      # MoSCoW + 验收标准
+├── 01-问卷.md          # 访谈原始答案（Mom Test 纪律）
+├── 02-brief.md         # 产品 Brief（定位/用户/痛点/边界）
+├── 03-竞品分析.md      # 竞品清单 + 确认对标集合
+├── 04-用户声音.md      # 机会点/价值点/空白点 + 需求真伪初判
+├── 05-需求分层.md      # MoSCoW + Gherkin 验收场景 + RICE 排序
 ├── 06-产品框架.md      # 信息架构/用户流程/页面清单
-├── 07-技术框架.md      # 选型理由/难点解法/开发顺序
-├── prototypes/         # 高保真可点击静态原型(入口 index.html)
-└── backlog.md          # 中途冒出的新想法,全部丢这里
+├── 07-技术框架.md      # 最薄一刀/选型理由/开发顺序
+├── prototypes/         # 高保真可点击静态原型（入口 index.html）
+└── backlog.md          # 中途冒出的新想法，全部丢这里
 ```
 
-## 怎么用
+## 🖥️ 命令行
 
-这是一个 [Agent Skill](https://agentskills.io)(SKILL.md 格式),装到你的 coding agent 里即可。以 ZCode / Claude Code 类 agent 为例:
+7 个 slash 命令直达（`/vibe` `/vibe-brief` `/vibe-competitive` `/vibe-voice` `/vibe-req` `/vibe-tech` `/vibe-check`），外加一个**不依赖 agent 的终端助手** `vh.sh`：
 
 ```bash
-# 克隆到你的用户级技能目录
-git clone https://github.com/3091485956-png/Vibe_helper.git ~/.agents/skills/Vibe_helper
+$ bash scripts/vh.sh new 记账App
+已创建 记账App/（含 prototypes/ 与 backlog.md）
+
+$ bash scripts/vh.sh next 记账App
+  01-问卷.md        完成    Stage 1 需求访谈
+  02-brief.md       未开始  Stage 2 产品 Brief
+  ...
+→ 下一步: Stage 2 产品 Brief（02-brief.md）
+  用 skill『product-brief』或命令『/vibe-brief』触发
+
+$ bash scripts/vh.sh backlog 记账App "想加导出Excel"
+已记入 记账App/backlog.md（范围守卫：新想法不进本期，二期再议）
+
+$ bash scripts/vh.sh check 记账App --expect 交付包   # 交付前机器自检
 ```
 
-然后对 agent 说类似这样的话,skill 会自动触发:
+仓库还带 `scripts/lint-skills.sh`：对套件自身做 56 项体检（frontmatter / 引用死链 / 共享文件漂移 / 触发词划界 / M 编号 / 命令文件），改完共享模板跑一遍即可防漂移。
 
-- "我想做一个叫 X 的产品/工具/App/网站"
-- "有个 idea,帮我分析下并做出来"
-- "vibe coding,帮我把这个产品从调研到开发一条龙做出来"
+## 📜 更新日志
 
-**注意事项:**
+<details>
+<summary><b>v0.3（2026-10）· 套件化 + 命令行适配</b> —— 点击展开</summary>
 
-- **PM 推荐用法**:跑到 Stage 6/7 为止——竞品分析、用户声音、需求分层、产品框架和高保真原型就是你的调研报告 + PRD 素材,可直接进评审或交给开发;交接指令也可以直接发给开发团队。
-- 全程使用中文交互。
-- 调研阶段需要 agent 具备联网搜索/浏览器能力,否则竞品与用户声音环节会打折扣。
-- 制作阶段会交接给环境里已有的建站/全栈类 skill;没有也不影响前面 1–7 阶段的使用。
-- 你可以随时只跑前几步:比如只想要调研报告和需求分层,在任意 ⛔ 节点喊停即可,产出物都已落盘。
+- **拆分为 1+5 套件**：全流程 orchestrator + 5 个单点 skill，同一套文件契约，可单点使用也可全流程
+- **命令行适配**：7 个 Claude Code slash 命令 + 纯终端助手 `vh.sh`（new / next / check / backlog）
+- **三档深度**：快速/标准/深度，竞品数、渠道数、验收场景数、原型页数随档伸缩
+- **中途进入**：已有产出直接复用，从缺失阶段开始
+- **Mom Test 访谈纪律**：问过去的行为，不问未来的意愿
+- **Gherkin 验收标准 + RICE 排序**：Must 逐场景可测，内部排序有依据
+- **references 全面升级**：每份模板增加好/坏对照示例；Common Pitfalls 独立成节；修复 M1–M6 编号断链
+- **工程化**：Claude Code 插件清单、install.sh 一键安装、lint-skills.sh 自检、validate.sh 支持 Gherkin 场景计数
 
-## 仓库结构
+</details>
 
-```
-├── SKILL.md                       # skill 主指令:8 阶段完整流程
-├── scripts/
-│   └── validate.sh                # 交付包机器自检(文档齐全/验收标准/原型死链)
-└── references/                    # 各阶段模板与规范
-    ├── questionnaire.md           # 需求访谈问卷模板
-    ├── prompt-refinement.md       # 产品 Brief 模板
-    ├── competitive-analysis.md    # 竞品分析维度与模板
-    ├── user-research.md           # 用户声音挖掘模板
-    ├── requirements-layering.md   # MoSCoW 分层与验收标准写法
-    ├── framework-output.md        # 产品/技术框架模板
-    ├── wireframe.md               # 静态原型绘制规范
-    ├── delivery-checklist.md      # 交付前必过 checklist
-    └── anti-hallucination.md      # 零幻觉与反自嗨纪律(证据分级/链接与数据纪律/语气规范)
-```
+<details>
+<summary><b>v0.2（2026-10）</b> —— 点击展开</summary>
 
-## 更新日志
+- 🔶 对标选择点：竞品调研后由用户确认对标集合
+- 零幻觉与反自嗨纪律：证据分级 / 链接与数据纪律 / 强制盲区小节
+- validate.sh 机器自检；每步先讲为什么；边界澄清（不直接生成最终产品代码）
 
-**v0.2（2026-10）**
-- 🔶 **对标选择点**:竞品调研后由用户确认对标集合——agent 给名单、重点推荐与理由,用户拍板,集合成为后续阶段的锚
-- **零幻觉与反自嗨纪律**:事实论断标注 [实证/推断/假设];链接必须本轮真实打开,数字不许凭记忆;调研文档强制写"本轮盲区";产出物禁止自我评价
-- **机器自检**:新增 `scripts/validate.sh`,⛔ 门放行与交付前机器校验交付包(文档齐全/Must 验收标准 ≥2 条且无模糊词/原型无死链)
-- **每步先讲为什么**:每个阶段开始时说明它为什么存在、产出影响哪个决策;推荐必附理由与依据
-- **边界澄清**:本 skill 产出文档与原型,不直接生成最终产品代码;Stage 8 只做交接与交付核对
-- **可移植性**:移除环境专名(Browser Use/general_search/doubao-*),改为按环境能力探测调用
+</details>
 
-**v0.1** — 初始版本:8 阶段流程、四道 ⛔ 确认门、最薄一刀、范围守卫、交付 checklist
+<details>
+<summary><b>v0.1</b> —— 初始版本</summary>
+
+8 阶段流程、四道 ⛔ 确认门、最薄一刀、范围守卫、交付 checklist
+
+</details>
+
+---
 
 ## License
 
-MIT
+[MIT](LICENSE) · 调研类 skill 需要 agent 具备联网/浏览器能力 · 制作阶段交接给环境里已有的建站/全栈 skill，没有也不影响 1–7 阶段使用
 
-## Star History
+## ⭐ Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=3091485956-png/Vibe_helper&type=Date)](https://star-history.com/#3091485956-png/Vibe_helper&Date)

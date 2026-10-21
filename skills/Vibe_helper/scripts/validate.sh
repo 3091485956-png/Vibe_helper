@@ -28,7 +28,7 @@ echo "检查目录: $DIR"
 echo "----------------------------------------"
 
 # 模糊词黑名单（对应 references/requirements-layering.md 的反例）
-VAGUE='好用|流畅|快速|美观|优雅|体验好|响应快|高大上|完美|丝滑|良好'
+VAGUE='好用|流畅|快速|美观|优雅|体验好|响应快|高大上|完美|丝滑|良好|准时'
 
 # ---- 1. 阶段文档齐全且非空 ----
 DOCS=("01-问卷.md" "02-brief.md" "03-竞品分析.md" "04-用户声音.md" "05-需求分层.md" "06-产品框架.md" "07-技术框架.md")
@@ -70,7 +70,16 @@ for f in "03-竞品分析.md" "04-用户声音.md"; do
   fi
 done
 
-# ---- 4. 02-brief 应有边界小节 ----
+# ---- 4. 04-用户声音: 应含需求真伪初判 ----
+if [ -f "$DIR/04-用户声音.md" ]; then
+  if grep -qE "真伪初判|需求真伪" "$DIR/04-用户声音.md"; then
+    ok "04 含『需求真伪初判』"
+  else
+    warn "04 疑似缺『需求真伪初判』小节"
+  fi
+fi
+
+# ---- 5. 02-brief 应有边界小节 ----
 if [ -f "$DIR/02-brief.md" ]; then
   if grep -q "不做" "$DIR/02-brief.md"; then
     ok "02-brief 含『明确不做』边界"
@@ -79,7 +88,7 @@ if [ -f "$DIR/02-brief.md" ]; then
   fi
 fi
 
-# ---- 5. 05-需求分层: Must 结构 + 验收标准质量 ----
+# ---- 6. 05-需求分层: Must 结构 + Gherkin 验收场景质量 ----
 REQ="$DIR/05-需求分层.md"
 if [ -f "$REQ" ]; then
   if grep -qE "MVP 范围|Must have" "$REQ"; then
@@ -94,26 +103,42 @@ if [ -f "$REQ" ]; then
     bad "05 缺『本期不做（Won't have）』——边界和 Must 一样重要"
   fi
 
-  # 每条 Must 用户故事的验收标准条数（缩进列表项跟在『- 验收标准』之后）
+  # 每条 Must 用户故事的验收场景计数（支持 Gherkin 场景式与旧版平铺式）
+  # 故事以非缩进的『- 验收标准』行开始；其下缩进列表项为验收内容：
+  #   『- 场景…』计一个场景；『- Given/When/Then』为场景步骤；其余计为一条普通 AC
+  # 输出两列: 故事数、每故事最少验收条数（普通 AC + 场景数合计）
   STATS=$(awk '
     /^[-*][[:space:]]*验收标准/ { story++; inac=1; next }
+    inac && /^[[:space:]]+[-*][[:space:]]*场景/ { scen[story]++; next }
+    inac && /^[[:space:]]+[-*][[:space:]]*(Given|When|Then)[[:space:]]/ { next }
     inac && /^[[:space:]]+[-*][[:space:]]/ { cnt[story]++; next }
     inac && /^[-*][[:space:]]/ { inac=0; next }
     /^#/ { inac=0 }
     END {
-      min = 99
-      for (s in cnt) if (cnt[s] < min) min = cnt[s]
-      if (story > 0 && min == 99) min = 0
-      printf "%d %d\n", story + 0, (min == 99 ? 0 : min)
+      min = 999999; n = story + 0
+      for (s = 1; s <= n; s++) {
+        tot = cnt[s] + scen[s]
+        if (tot > 0 && tot < min) min = tot
+      }
+      printf "%d %d\n", n, (min==999999?0:min)
     }' "$REQ")
-  STORY=${STATS%% *}
-  MINAC=${STATS##* }
+  GWT=$(awk '
+    /^[-*][[:space:]]*验收标准/ { inac=1 }
+    inac && /^[[:space:]]+[-*][[:space:]]*(Given|When|Then)[[:space:]]/ { c++ }
+    inac && /^[-*][[:space:]]/ && $0 !~ /^[-*][[:space:]]*验收标准/ { inac=0 }
+    /^#/ { inac=0 }
+    END { print c + 0 }' "$REQ")
+  STORY=$(echo "$STATS" | awk '{print $1}')
+  MINAC=$(echo "$STATS" | awk '{print $2}')
   if [ "${STORY:-0}" -ge 1 ]; then
-    ok "05 共 ${STORY} 条 Must 用户故事"
+    ok "05 共 ${STORY} 条带验收标准的 Must 故事"
     if [ "${MINAC:-0}" -lt 2 ]; then
-      bad "存在验收标准不足 2 条的 Must 故事（最少的一条只有 ${MINAC} 条）"
+      bad "存在验收标准不足 2 条的 Must 故事（最少的一条只有 ${MINAC} 条/场景）"
     else
-      ok "每条 Must 故事验收标准 ≥2 条（最少 ${MINAC}）"
+      ok "每条 Must 故事验收标准 ≥2（最少 ${MINAC}）"
+    fi
+    if [ "${GWT:-0}" -gt 0 ]; then
+      ok "验收标准含 Gherkin 步骤（Given/When/Then 共 ${GWT} 行）"
     fi
   else
     bad "05 没有解析到『- 验收标准』块——Must 故事缺失或格式不对"
@@ -135,7 +160,7 @@ if [ -f "$REQ" ]; then
   fi
 fi
 
-# ---- 6. prototypes/: 入口 + 死链 ----
+# ---- 7. prototypes/: 入口 + 死链 ----
 if [ -d "$DIR/prototypes" ]; then
   if [ -f "$DIR/prototypes/index.html" ]; then
     ok "prototypes/index.html 入口存在"
