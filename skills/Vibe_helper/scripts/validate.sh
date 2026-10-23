@@ -49,6 +49,70 @@ for f in "${DOCS[@]}"; do
   fi
 done
 
+# ---- 1.5 版本头与状态卡（00-状态.md）----
+for f in "${DOCS[@]}" "00-状态.md"; do
+  p="$DIR/$f"
+  [ -f "$p" ] || continue
+  # 模式不带头部的 📌 emoji: GNU grep 3.x 对 4 字节 UTF-8 + 字符组的组合有已知 bug
+  if grep -qE '版本 v[0-9]+' "$p"; then
+    ok "$f 含版本头"
+  else
+    bad "$f 缺版本头（应为：📌 版本 vN · 日期 · 变更）"
+  fi
+done
+
+STATE="$DIR/00-状态.md"
+if [ -f "$STATE" ]; then
+  ok "00-状态.md 存在"
+  MANIFEST=$(grep -m1 -oE '组装自: [^·]+' "$STATE" | sed 's/组装自: *//' | tr -d ' ')
+  if [ -n "$MANIFEST" ]; then
+    OLDIFS=$IFS
+    IFS=','
+    for pair in $MANIFEST; do
+      doc="${pair%@*}"
+      mv="${pair#*@}"; mv="${mv#v}"
+      pp="$DIR/$doc.md"
+      if [ ! -f "$pp" ]; then
+        warn "组装清单引用的 $doc 不存在（可能改名，建议重组装）"
+        continue
+      fi
+      cv=$(grep -m1 -oE '版本 v[0-9]+' "$pp" | grep -oE '[0-9]+')
+      case "$mv" in ''|*[!0-9]*) continue ;; esac
+      case "$cv" in ''|*[!0-9]*) continue ;; esac
+      if [ "$cv" -gt "$mv" ]; then
+        bad "00-状态.md 过期：$doc 已 v$cv，组装清单仍是 @$mv——先重组装再继续"
+      elif [ "$mv" -gt "$cv" ]; then
+        warn "组装清单记录 $doc@$mv 高于实际 v$cv（版本头疑似未更新）"
+      else
+        ok "组装清单一致：$doc@v$cv"
+      fi
+    done
+    IFS=$OLDIFS
+  else
+    bad "00-状态.md 缺组装清单（组装自: 01@v1, …）"
+  fi
+  # 05 功能 ID 与 00 Must ID 集合一致性
+  if [ -f "$DIR/05-需求分层.md" ]; then
+    ids05=$(grep -oE 'M-F[0-9]+' "$DIR/05-需求分层.md" | sort -u)
+    ids00=$(grep -oE 'M-F[0-9]+' "$STATE" | sort -u)
+    if [ -n "$ids05" ]; then
+      if [ -z "$ids00" ]; then
+        bad "05 已用功能 ID（M-F*）但 00-状态.md 的 Must 清单没有同步——状态卡过期"
+      elif [ "$ids05" = "$ids00" ]; then
+        ok "05 功能 ID 与 00 Must ID 一致（$(echo "$ids05" | wc -l) 个）"
+      else
+        bad "05 功能 ID 与 00 Must ID 不一致——状态卡与需求文档漂移"
+      fi
+    fi
+  fi
+else
+  if [ "$EXPECT" = "交付包" ]; then
+    bad "缺 00-状态.md（交付包模式必需）"
+  elif [ -f "$DIR/05-需求分层.md" ]; then
+    warn "已有 05 但缺 00-状态.md，建议组装（状态卡是主上下文与交接首材料）"
+  fi
+fi
+
 # ---- 2. 03-竞品分析: 🔶 对标选择点必须走完 ----
 if [ -f "$DIR/03-竞品分析.md" ]; then
   if grep -q "确认对标集合" "$DIR/03-竞品分析.md"; then

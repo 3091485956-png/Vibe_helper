@@ -47,6 +47,12 @@ cmd_next() {
   if [ ! -d "$dir" ]; then echo "未找到产品目录: $1"; echo "先运行: vh new <产品名>"; exit 1; fi
   echo "产品目录: $dir"
   echo "----------------------------------------"
+  if [ -f "$dir/00-状态.md" ]; then
+    sv=$(grep -m1 -oE '版本 v[0-9]+' "$dir/00-状态.md" || true)
+    printf '  %-18s %-8s %s\n' "00-状态.md" "${sv:-无版本}" "主上下文/交接首材料"
+  else
+    printf '  %-18s %-8s %s\n' "00-状态.md" "未开始" "主上下文/交接首材料"
+  fi
   local i st first=-1
   for i in "${!DOCS[@]}"; do
     st=$(status_of "$dir/${DOCS[$i]}")

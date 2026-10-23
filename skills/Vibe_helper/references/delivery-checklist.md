@@ -5,6 +5,7 @@
 
 ## 1. 验收对照（来自 05-需求分层.md）
 - [ ] 跑过机器自检：`bash <本skill目录>/scripts/validate.sh ./<产品名> --expect 交付包`，全部通过
+- [ ] 交接前一致性 checklist（`context-assembly.md`）已跑：00 组装清单与各文档版本一致、功能 ID（M-F*）一致
 - [ ] 每个 Must have 用户故事的**每个验收场景（Given/When/Then）**都逐条验证过
 - [ ] 输出了一份验收对照表：每个场景 → 实际结果（通过/未通过 + 证据）
 - [ ] 没有偷偷加 Must 以外的功能（发现一条就移到 `backlog.md`）
