@@ -28,13 +28,23 @@ fi
 echo "检查目录: $DIR"
 echo "----------------------------------------"
 
-# ---- 0. AI 轨道判定（00/02/05 提及，或 08 已存在）----
+# ---- 0. AI 轨道判定（注意：所有项目的 01/00 都含"AI 轨道判定"小节，
+#      非 AI 项目写的是"非 AI 轨道"——只认肯定式断言，防止误报）----
 AI_TRACK=0
-for f in "00-状态.md" "02-brief.md" "05-需求分层.md"; do
-  p="$DIR/$f"
-  if [ -f "$p" ] && grep -q "AI 轨道" "$p"; then AI_TRACK=1; fi
-done
+# 肯定式信号：08 存在；00/01 的判定值为"AI 轨道"（行首或"结论："开头，排除"非 AI 轨道"）；
+# 02 写了能力边界小节；05 写了质量验收（均为 AI 轨道专属结构）
 [ -f "$DIR/08-评测方案.md" ] && AI_TRACK=1
+for f in "00-状态.md" "01-问卷.md"; do
+  p="$DIR/$f"
+  if [ -f "$p" ] && grep -qE '(^|[：:][[:space:]]*\*{0,2}|结论[：:][[:space:]]*\*{0,2})AI[[:space:]]*轨道' "$p"; then
+    # 排除"非 AI 轨道"与标题行"AI 轨道判定"：匹配行不得以"非"开头且不得是"判定"标题
+    if grep -E '(^|[：:][[:space:]]*\*{0,2}|结论[：:][[:space:]]*\*{0,2})AI[[:space:]]*轨道' "$p" | grep -vE '非[[:space:]]*AI[[:space:]]*轨道|AI[[:space:]]*轨道判定' | grep -q .; then
+      AI_TRACK=1
+    fi
+  fi
+done
+if [ -f "$DIR/02-brief.md" ] && grep -q "能力边界" "$DIR/02-brief.md"; then AI_TRACK=1; fi
+if [ -f "$DIR/05-需求分层.md" ] && grep -q "质量验收" "$DIR/05-需求分层.md"; then AI_TRACK=1; fi
 if [ "$AI_TRACK" -eq 1 ]; then
   echo "AI 轨道: 是（08-评测方案 / 能力边界 / badcase 台账 按 AI 规则检查）"
 else
