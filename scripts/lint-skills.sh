@@ -6,7 +6,7 @@
 #   2. 文中引用的 references/*.md 必须真实存在(死链检查)
 #   3. 共享 reference 在多个 skill 间必须字节一致(防漂移)
 #   4. 触发词划界: 全流程关键词只归 Vibe_helper
-#   5. M1-M6 编号: 凡引用必须能在 Vibe_helper 失败模式表中找到定义
+#   5. M1-M10 编号: 凡引用必须能在 Vibe_helper 失败模式表中找到定义
 #   6. 所有 .sh 语法检查
 # 退出码: 0 = 全部通过, 1 = 存在必须修复的问题
 
@@ -79,6 +79,7 @@ check_drift competitive-analysis.md Vibe_helper competitive-analysis
 check_drift user-research.md Vibe_helper user-voice
 check_drift requirements-layering.md Vibe_helper requirements-layering
 check_drift framework-output.md Vibe_helper tech-framework
+check_drift eval-plan.md Vibe_helper tech-framework
 check_drift context-assembly.md Vibe_helper product-brief requirements-layering tech-framework
 
 # ---- 4. 触发词划界（只看 frontmatter 的 description 行）----
@@ -104,7 +105,7 @@ for d in $SKILLS; do
 done
 
 # ---- 5. M 编号一致性 ----
-USED=$(grep -rhoE '\bM[1-9]\b' skills --include='*.md' | sort -u | tr -d '\r')
+USED=$(grep -rhoE '\bM(10|[1-9])\b' skills --include='*.md' | sort -u | tr -d '\r')
 for m in $USED; do
   if grep -q "$m" "$ORCH"; then
     ok "编号 $m 在失败模式表中有定义"
@@ -112,7 +113,7 @@ for m in $USED; do
     bad "编号 $m 被引用但 Vibe_helper 失败模式表中无定义"
   fi
 done
-for i in 1 2 3 4 5 6 7; do
+for i in 1 2 3 4 5 6 7 8 9 10; do
   grep -q "M$i" "$ORCH" || bad "失败模式表缺 M$i"
 done
 

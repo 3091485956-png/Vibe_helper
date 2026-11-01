@@ -59,6 +59,20 @@ cmd_next() {
     printf '  %-18s %-6s %s\n' "${DOCS[$i]}" "$st" "${STAGES[$i]}"
     if [ "$st" != "完成" ] && [ "$first" -lt 0 ]; then first=$i; fi
   done
+  # AI 轨道: 08-评测方案 与 badcase 台账
+  local ai=0
+  for f in "00-状态.md" "02-brief.md" "05-需求分层.md"; do
+    [ -f "$dir/$f" ] && grep -q "AI 轨道" "$dir/$f" && ai=1
+  done
+  [ -f "$dir/08-评测方案.md" ] && ai=1
+  if [ "$ai" -eq 1 ]; then
+    printf '  %-18s %-6s %s\n' "08-评测方案.md" "$(status_of "$dir/08-评测方案.md")" "Stage 6 评测方案（AI 轨道）"
+    if [ -f "$dir/badcase台账.md" ]; then
+      printf '  %-18s %-6s\n' "badcase台账.md" "已创建"
+    else
+      printf '  %-18s %-6s\n' "badcase台账.md" "未创建"
+    fi
+  fi
   local pst="未开始"
   [ -f "$dir/prototypes/index.html" ] && pst="完成"
   printf '  %-18s %-6s %s\n' "prototypes/" "$pst" "Stage 7 静态原型"

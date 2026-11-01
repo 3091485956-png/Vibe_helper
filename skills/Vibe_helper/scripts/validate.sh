@@ -2,7 +2,8 @@
 # Vibe_helper 交付包机器自检
 # 用法: bash scripts/validate.sh <产品目录> [--expect 交付包]
 #   默认模式:   校验已存在的产出物, 缺失的文档只提醒
-#   --expect 交付包: 01-07 全部文档 + prototypes/ 必须齐全
+#   --expect 交付包: 01-07 全部文档 + prototypes/ 必须齐全;
+#                    AI 轨道另需 08-评测方案 + badcase台账.md
 # 退出码: 0 = 全部通过, 1 = 存在必须修复的问题
 
 set -u
@@ -26,6 +27,19 @@ fi
 
 echo "检查目录: $DIR"
 echo "----------------------------------------"
+
+# ---- 0. AI 轨道判定（00/02/05 提及，或 08 已存在）----
+AI_TRACK=0
+for f in "00-状态.md" "02-brief.md" "05-需求分层.md"; do
+  p="$DIR/$f"
+  if [ -f "$p" ] && grep -q "AI 轨道" "$p"; then AI_TRACK=1; fi
+done
+[ -f "$DIR/08-评测方案.md" ] && AI_TRACK=1
+if [ "$AI_TRACK" -eq 1 ]; then
+  echo "AI 轨道: 是（08-评测方案 / 能力边界 / badcase 台账 按 AI 规则检查）"
+else
+  echo "AI 轨道: 否"
+fi
 
 # 模糊词黑名单（对应 references/requirements-layering.md 的反例）
 VAGUE='好用|流畅|快速|美观|优雅|体验好|响应快|高大上|完美|丝滑|良好|准时'
@@ -122,14 +136,16 @@ if [ -f "$DIR/03-竞品分析.md" ]; then
   fi
 fi
 
-# ---- 3. 调研文档必须写『本轮盲区』（anti-hallucination.md 强制）----
+# ---- 3. 调研文档必须写『待核实清单』（证据分级纪律强制）----
 for f in "03-竞品分析.md" "04-用户声音.md"; do
   p="$DIR/$f"
   if [ -f "$p" ]; then
-    if grep -q "本轮盲区" "$p"; then
-      ok "$f 含『本轮盲区』小节"
+    if grep -q "待核实清单" "$p"; then
+      ok "$f 含『待核实清单』（盲区 + 推测，一个出口）"
+    elif grep -q "本轮盲区" "$p"; then
+      warn "$f 只有旧版『本轮盲区』——升级为『待核实清单』（盲区+推测合并，推测须附验证路径）"
     else
-      bad "$f 缺『本轮盲区』小节（零幻觉纪律强制）"
+      bad "$f 缺『待核实清单』小节（证据分级纪律强制）"
     fi
   fi
 done
@@ -150,7 +166,42 @@ if [ -f "$DIR/02-brief.md" ]; then
   else
     warn "02-brief 疑似缺『明确不做』边界小节"
   fi
+  # AI 轨道: 能力边界必填
+  if [ "$AI_TRACK" -eq 1 ]; then
+    if grep -q "能力边界" "$DIR/02-brief.md"; then
+      ok "02-brief 含『能力边界』（AI 轨道：适用域/水平线/不保证）"
+    else
+      if [ "$EXPECT" = "交付包" ]; then
+        bad "AI 轨道但 02-brief 缺『能力边界』小节"
+      else
+        warn "AI 轨道但 02-brief 暂缺『能力边界』小节（Stage 2 应写入）"
+      fi
+    fi
+  fi
+  # 委托模式: 代定留痕（M10）
+  if grep -qE "决策模式：委托|决策模式: 委托" "$DIR/02-brief.md"; then
+    if grep -q "代定" "$DIR/02-brief.md"; then
+      ok "委托模式：Brief 含 [B/C·代定] 留痕"
+    else
+      bad "委托模式但 Brief 无 [B/C·代定] 标注——委托必须留痕（M10）"
+    fi
+  fi
 fi
+
+# ---- 5.5 决策面板（02–08 第一屏，双阅读模式）----
+for f in "02-brief.md" "03-竞品分析.md" "04-用户声音.md" "05-需求分层.md" "06-产品框架.md" "07-技术框架.md" "08-评测方案.md"; do
+  p="$DIR/$f"
+  [ -f "$p" ] || continue
+  if head -50 "$p" | grep -q "决策面板"; then
+    ok "$f 第一屏含决策面板（30 秒拍板层）"
+  else
+    if [ "$EXPECT" = "交付包" ]; then
+      bad "$f 缺第一屏决策面板——用户点开看不到要判断什么"
+    else
+      warn "$f 疑似缺第一屏决策面板"
+    fi
+  fi
+done
 
 # ---- 6. 05-需求分层: Must 结构 + Gherkin 验收场景质量 ----
 REQ="$DIR/05-需求分层.md"
@@ -262,6 +313,51 @@ else
     bad "缺 prototypes/ 目录（交付包模式必需）"
   else
     warn "尚未产出 prototypes/"
+  fi
+fi
+
+# ---- 8. AI 轨道: 08-评测方案 结构 + badcase 台账 ----
+if [ "$AI_TRACK" -eq 1 ]; then
+  EVAL="$DIR/08-评测方案.md"
+  if [ -f "$EVAL" ]; then
+    ok "08-评测方案.md 存在"
+    for kw in "评测用例表" "期望输出" "冒烟子集"; do
+      if grep -q "$kw" "$EVAL"; then
+        ok "08 含『$kw』"
+      else
+        bad "08 缺『$kw』——评测方案结构不完整"
+      fi
+    done
+    if grep -qE "通过线|通过率" "$EVAL"; then
+      ok "08 含通过线/通过率（评测有门槛）"
+    else
+      bad "08 缺通过线——没有门槛的评测等于没评测"
+    fi
+  else
+    if [ "$EXPECT" = "交付包" ]; then
+      bad "AI 轨道但缺 08-评测方案.md（交付包模式必需）"
+    else
+      warn "AI 轨道：08-评测方案.md 尚未产出（Stage 6 应产出）"
+    fi
+  fi
+
+  LEDGER="$DIR/badcase台账.md"
+  if [ -f "$LEDGER" ]; then
+    ok "badcase台账.md 已创建（随包交付）"
+    if grep -q "归因" "$LEDGER"; then
+      ok "台账含归因分诊表"
+    else
+      bad "台账缺归因分诊表（模板见 badcase-ledger.md）"
+    fi
+    if grep -q "回灌" "$LEDGER"; then
+      ok "台账含回灌规则"
+    else
+      bad "台账缺回灌规则——未回灌不得关闭（M9）"
+    fi
+  else
+    if [ "$EXPECT" = "交付包" ]; then
+      bad "AI 轨道但缺 badcase台账.md（Stage 8 交接必留）"
+    fi
   fi
 fi
 
