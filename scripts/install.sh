@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # 把本仓库 skills/ 下的所有 skill 安装到 agent 技能目录
 # 用法:
-#   bash scripts/install.sh                # 装到 ~/.agents/skills (ZCode 等)
+#   bash scripts/install.sh                # 装到 ~/.agents/skills，ZCode 等
 #   bash scripts/install.sh --claude       # 装到 ~/.claude/skills (Claude Code)
 #   bash scripts/install.sh --commands     # 额外把 slash 命令装到 ~/.claude/commands (非插件安装时用)
 #   bash scripts/install.sh --target DIR   # 装到自定义目录
 #   bash scripts/install.sh --only X,Y     # 只装指定 skill
-# 说明: 每个 skill 文件夹自包含(references 副本齐全), 单独拷贝某个文件夹也能用。
+# 说明: 每个 skill 文件夹自包含，references 副本齐全，单独拷贝某个文件夹也能用。
 
 set -u
 cd "$(dirname "$0")/.."
@@ -48,5 +48,5 @@ if [ "$WITH_COMMANDS" = "1" ]; then
 fi
 
 echo
-echo "完成。新装的 skill 一般要在新会话(或重启 agent)后生效。"
+echo "完成。新装的 skill 一般要在新会话或重启 agent 后生效。"
 echo "如需卸载: rm -rf $TARGET/<skill名>"

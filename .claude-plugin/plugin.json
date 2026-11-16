@@ -1,12 +1,12 @@
 {
   "name": "vibe-helper",
-  "description": "从一句话产品想法到可直接开工的交付包：全流程 orchestrator + 5 个单点 PM skill（产品 Brief / 竞品调研 / 用户声音 / 需求分层 / 技术框架）；v0.4 新增 AI 轨道（能力边界 + 评测方案 + badcase 台账）、A/B/C 证据分级、决策面板与自主/委托决策模式",
-  "version": "0.4.1",
+  "description": "从一句话产品想法到可直接开工的交付包：全流程 orchestrator 加 5 个单点 PM skill，覆盖产品 Brief、竞品调研、用户声音、需求分层与技术框架；含 AI 轨道即能力边界、评测方案与 badcase 台账、A/B/C 证据分级、决策面板与自主委托决策模式。English: from a one-sentence idea to a development-ready delivery package, one orchestrator plus five focused PM skills, bilingual, with an AI track, evidence grading and decision panels.",
+  "version": "0.5.0",
   "author": {
     "name": "3091485956-png"
   },
   "homepage": "https://github.com/3091485956-png/Vibe_helper",
   "repository": "https://github.com/3091485956-png/Vibe_helper",
   "license": "MIT",
-  "keywords": ["product-management", "pm", "vibe-coding", "prd", "competitive-analysis", "user-research"]
+  "keywords": ["product-management", "pm", "vibe-coding", "prd", "competitive-analysis", "user-research", "bilingual"]
 }
