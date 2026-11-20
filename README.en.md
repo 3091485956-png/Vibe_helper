@@ -8,7 +8,7 @@
 
 An agent skill suite for product managers and vibe coders · Bilingual, Chinese and English
 
-[![version](https://img.shields.io/badge/version-0.5.0-blue)]()
+[![version](https://img.shields.io/badge/version-0.6.0-blue)]()
 [![skills](https://img.shields.io/badge/skills-1%20orchestrator%20%2B%205%20focused-8A2BE2)]()
 [![commands](https://img.shields.io/badge/slash%20commands-7-ff6b35)]()
 [![license](https://img.shields.io/badge/license-MIT-green)]()
@@ -48,7 +48,7 @@ Ten common failure modes of new products and vibe coding, each with a countermea
 | Failure mode | Countermeasure |
 | --- | --- |
 | **M1** Start coding from one sentence; the result is not what was wanted | Interview plus brief, gated by explicit confirmation |
-| **M2** Requirements live only in someone's head; understanding never verified | Brief confirmation gate, at most 3 revision rounds |
+| **M2** Requirements live only in someone's head; understanding never verified | Implicit-decision checklist grilled round by round, then the brief gate, at most 3 revision rounds |
 | **M3** Demo screenshot then abandonment; empty states, errors, keys, deployment all missing | Delivery checklist plus machine validation script |
 | **M4** MVP keeps growing; mid-project features break old code | Scope guard: new ideas go to `backlog.md`, always |
 | **M5** Building something nobody wants | Post-research decision gate: argue against building, with evidence |
@@ -65,7 +65,9 @@ Ten common failure modes of new products and vibe coding, each with a countermea
 - **You pick the benchmarks**: after research you get the list, the recommended two or three with reasons, and the final confirmed set becomes the anchor for every later stage
 - **Three opening questions**: depth tier, quick, standard or deep × decision mode, self-directed or delegated × output audience, downstream agents or human readers. **Tiers control weight, roles control shape, honesty applies to everyone**
 - **Delegated mode**: gates become decision receipts, at most five plain-language items, each vetoable; the brief gate asks two plain questions; delegated decisions carry [B/C·代定] marks end to end
-- **Mom Test interviews**: ask about past behavior, never about future intentions; the user's own research material is absorbed directly and marked [A：用户提供], meaning user-provided evidence
+- **Mom Test interviews**: ask about past behavior, never about future intentions; a four-way question discipline: behavior questions never carry a suggested answer, decision questions always carry one with a reason, factual questions are never asked of the user but marked for later research, and questions talk cannot settle are deferred to prototype time; the user's own research material is absorbed directly and marked [A：用户提供], meaning user-provided evidence
+- **Implicit-decision checklist**: the brief gate first grills every decision the agent made on your behalf, one line each with the choice, the reason and the evidence grade, at most 8 per round with no intra-round dependencies, confirmed or vetoed item by item; approving everything triggers a warning before the gate opens; only a cleared checklist leads to the full-brief pass
+- **Gold-standard report skeletons**: competitive analysis gives every competitor the same five dimensions plus a cross-competitor table, an ecological-niche map, and a three-way conclusion of worth copying, worth improving, and not needed for now; user voice ranks numbered pain points by severity, each with a qualitative title, verbatim quotes, quantified data, behavior evidence and a destination, plus a tool-gap table; requirement layering starts from a requirement map of user maturity, journey stages and KANO before MoSCoW, standard tier and up. **The skeleton is tier-independent: quick runs cut depth, never structure**; see the worked examples under skills/Vibe_helper/references/report-examples/
 - **AI track**: interview detection → capability boundaries in the brief → acceptance rework in stage 5, quality pinned to eval references → the eval plan in stage 6, humans provide answers → boundary copy made visible in the prototype → ledger at handoff. **Boundaries are measured, not written**
 - **Evidence grading and hallucination surfacing**: hallucination cannot reach zero, so the goal is mitigation plus visibility. Claims are marked **A** for direct evidence, **B** for evidence plus a reasoning chain, **C** for model conjecture; C claims stay under one third and all enter the to-verify list with a verification path; recommendations resting on C-level claims must say so; before writing to disk, five random A-level links get re-opened for spot checks
 - **Dual reading mode**: the first screen of every document is a **decision panel**, at most three pending judgments, key findings, and the to-verify list, a 30-second read; the body stays comprehensive as raw material for a 30-minute verification pass
@@ -118,9 +120,9 @@ Every project produces a complete delivery set:
 ├── 00-状态.md          # Rolling status card: primary context, consistency anchor, first handoff item
 ├── 01-问卷.md          # Raw interview answers, Mom Test discipline plus AI-track detection
 ├── 02-brief.md         # Product brief: positioning, users, pain, boundaries, capability limits; decision panel on screen one
-├── 03-竞品分析.md      # Competitor list, confirmed benchmark set, eval seeds
-├── 04-用户声音.md      # Opportunities, values, gaps, demand-realness verdict, eval seeds
-├── 05-需求分层.md      # MoSCoW, Gherkin scenarios with eval references for AI Musts, RICE
+├── 03-竞品分析.md      # Five dimensions per competitor, cross table and niche map, three-way conclusion, confirmed benchmark set, eval seeds
+├── 04-用户声音.md      # Severity-ranked numbered pain points, tool-gap table, demand-realness verdict, eval seeds
+├── 05-需求分层.md      # Requirement map, MoSCoW, Gherkin scenarios with eval references for AI Musts, RICE
 ├── 06-产品框架.md      # Information architecture, user flows, page list
 ├── 07-技术框架.md      # Thinnest path, stack rationale, build order
 ├── 08-评测方案.md      # AI track: eval set with human answers, rubric draft, pass bars, smoke subset
@@ -160,6 +162,18 @@ The repo also ships `scripts/lint-skills.sh`, a structural self-check for the su
 SKILL.md is a prompt program; every edit is a release, so the suite carries its own eval set. `tests/golden-scenarios.md` holds **eight golden scenarios**: adversarial personas for M1 through M10, plus the kill gate, mid-run entry, a full delegated run, and a human-reader PM pass; assertions are written as observable behavior, and since v0.5 they include bilingual regression checks. The **three-scenario smoke subset**, happy path, kill advice, and mid-run entry, runs after every SKILL.md edit; the suite's own badcase ledger sits at the end of that file, one backfill per fix.
 
 ## Changelog
+
+<details open>
+<summary><b>v0.6.0, 2026-11 · Gold-standard report constraints and the implicit-decision checklist</b>, click to collapse</summary>
+
+- **Gold-standard report skeletons**: two real research reports became worked examples shipped under `references/report-examples/`, and stages 3 and 4 now write against them. Competitive analysis was rewritten to a fixed skeleton: five dimensions per competitor (intro, links, tech framework, strengths, limitations) with at least three full-argument points each way; a cross-competitor comparison table; an ecological-niche map naming the layer each competitor occupies and the gap nobody covers; a three-way conclusion of worth copying, worth improving, and **not needed for now** (the research-side Won't-have, keeping a survey from inducing scope creep); a combined positioning recommendation; and a numbered source list at the end. User voice: pain points numbered and ranked by severity, each carrying a qualitative title, verbatim user quotes, quantified data (cited with the study ID when available, explicitly declared absent otherwise), behavior evidence, and an explicit destination; evidence sources widened to five categories with academic empirical studies ranked hardest and mandatory from the standard tier; plus a tool-gap table of existing solutions, what they do, and their key gaps, feeding both differentiation and the kill gate. **The skeleton is tier-independent: quick runs cut depth, never structure**
+- **Requirement map in stage 5, an input view that replaces nothing**: from the standard tier, layering starts with user maturity tiers L1 to L3, journey stages cross-referenced to pain-point numbers, and a KANO-to-MoSCoW mapping, plus a three-way cross matrix in the deep tier; MoSCoW, Gherkin and RICE keep their contract status. Must stories now cite pain-point numbers, and a Must without pain-point evidence has its RICE confidence capped at 1; the RICE table gained a rationale column; P0/P1/P2 serve as outbound aliases only
+- **Implicit-decision checklist, borrowed from grill-me's grilling mechanism**: the self-directed brief gate now runs in two steps. First the agent extracts every implicit decision it made for the user, one line each with the choice, a one-line reason and the evidence grade; at most 8 per round, no intra-round dependencies, confirmed or vetoed item by item; **approving every single item triggers a warning before the gate opens**; only a cleared checklist leads to the full-brief pass. The delegated-mode decision receipt is the pre-filled variant of this list. The interview gained a four-way question discipline: behavior questions never carry a suggested answer, decision questions always carry one with a reason, factual questions are never asked of the user, and questions talk cannot settle are deferred to prototype time
+- **validate.sh gained gold-standard structure checks**: horizontal comparison, not-needed-for-now and source list in 03, and the tool-gap table and source list in 04 are FAIL-level; niche map, positioning advice, the requirement map and pain-point numbering are WARN-level. Lint and fixture smoke tests pass; shared files are byte-identical across copies
+- **Golden scenarios backfilled**: G1 gained assertions for five-dimension reports, pain-point numbering and the implicit-decision checklist; G5 gained the all-approved-means-warning assertion; G6 gained the skeleton-not-exempted assertion
+- **Focused skills synced**: references copies and gold-standard examples synchronized across competitive-analysis, user-voice, requirements-layering, product-brief and tech-framework; the lint drift check passes clean
+
+</details>
 
 <details open>
 <summary><b>v0.5.0, 2026-11 · Bilingual support and prose normalization</b>, click to collapse</summary>

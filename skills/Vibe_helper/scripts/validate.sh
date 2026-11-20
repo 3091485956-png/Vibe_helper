@@ -137,12 +137,30 @@ else
   fi
 fi
 
-# ---- 2. 03-竞品分析：对标选择点必须走完 ----
+# ---- 2. 03-竞品分析：对标选择点必须走完 + 金标准结构 ----
 if [ -f "$DIR/03-竞品分析.md" ]; then
   if grep -q "确认对标集合" "$DIR/03-竞品分析.md"; then
     ok "03 含确认对标集合小节，对标已过用户确认"
   else
     bad "03 缺确认对标集合小节，对标选择点没走完"
+  fi
+  # 金标准结构约束（骨架不分档，快速档砍深度不砍结构）
+  for kw in "横向对比" "非必要" "数据来源"; do
+    if grep -q "$kw" "$DIR/03-竞品分析.md"; then
+      ok "03 含 $kw，金标准结构"
+    else
+      bad "03 缺 $kw，报告骨架须对照 references/report-examples/金标准-竞品分析.md，骨架不分档"
+    fi
+  done
+  if grep -q "生态位" "$DIR/03-竞品分析.md"; then
+    ok "03 含生态位地图"
+  else
+    warn "03 疑似缺生态位地图段落，差异化定位的证据基础"
+  fi
+  if grep -q "定位建议" "$DIR/03-竞品分析.md"; then
+    ok "03 含定位建议"
+  else
+    warn "03 疑似缺组合式定位建议"
   fi
 fi
 
@@ -160,12 +178,28 @@ for f in "03-竞品分析.md" "04-用户声音.md"; do
   fi
 done
 
-# ---- 4. 04-用户声音: 应含需求真伪初判 ----
+# ---- 4. 04-用户声音: 需求真伪初判 + 金标准结构 ----
 if [ -f "$DIR/04-用户声音.md" ]; then
   if grep -qE "真伪初判|需求真伪" "$DIR/04-用户声音.md"; then
     ok "04 含需求真伪初判"
   else
     warn "04 疑似缺需求真伪初判小节"
+  fi
+  # 金标准结构约束（骨架不分档）
+  if grep -q "工具缺口" "$DIR/04-用户声音.md"; then
+    ok "04 含现有工具缺口表，差异化定位与劝退门的证据"
+  else
+    bad "04 缺现有工具缺口小节，骨架须对照 references/report-examples/金标准-用户痛点调研.md"
+  fi
+  if grep -q "数据来源" "$DIR/04-用户声音.md"; then
+    ok "04 含数据来源列表，引述与数字可回溯"
+  else
+    bad "04 缺数据来源列表，量化数字与原话必须有编号出处"
+  fi
+  if grep -qE "痛点[0-9１-９一二三四五六七八九十]" "$DIR/04-用户声音.md"; then
+    ok "04 痛点带编号，05 的来源锚点"
+  else
+    warn "04 疑似缺编号痛点（痛点1、痛点2…按严重程度排列）"
   fi
 fi
 
@@ -226,6 +260,18 @@ if [ -f "$REQ" ]; then
     ok "05 含本期不做即 Won't have边界"
   else
     bad "05 缺本期不做即 Won't have，边界和 Must 一样重要"
+  fi
+
+  # 金标准结构约束：需求地图（标准档起）与痛点编号回溯
+  if grep -q "需求地图" "$REQ"; then
+    ok "05 含需求地图，多维前置视角"
+  else
+    warn "05 疑似缺需求地图；快速档可免，标准/深度档必填"
+  fi
+  if grep -qE "04 痛点|对应痛点" "$REQ"; then
+    ok "05 Must 来源带痛点编号，可回溯到 04"
+  else
+    warn "05 疑似缺痛点编号来源，来自 04 的 Must 须写痛点编号"
   fi
 
   # 每条 Must 用户故事的验收场景计数，支持 Gherkin 场景式与旧版平铺式

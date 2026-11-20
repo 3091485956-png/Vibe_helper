@@ -1,6 +1,6 @@
 ---
 name: user-voice
-description: 挖掘竞品评论，含差评与好评，与目标用户在 Reddit、HN、知乎、V2EX、小红书等社区的真实讨论，按主题提炼机会点、价值点、空白点并给出需求真伪初判，每条洞察附真实出处链接、A/B/C 证据等级与行为证据，AI 轨道时含评测种子。当用户说"帮我挖用户声音"、"看看用户对 X 都在吐槽什么"、"这个需求是真的吗"、"帮我做用户调研"时使用。正处于 Vibe_helper 全流程时按该流程走，无需单独触发。English: mine competitor reviews and real community discussions on Reddit, HN, Zhihu, V2EX and more, cluster them into opportunities, values and gaps, and deliver a demand-realness verdict with behavior evidence. Use when the user asks "what do users complain about X", "is this demand real", or "do user research"; inside the Vibe_helper pipeline it runs as part of that flow.
+description: 挖掘竞品评论，含差评与好评，与目标用户在 Reddit、HN、知乎、V2EX、小红书等社区的真实讨论，加上 arXiv 等学术实证研究交叉验证，痛点按严重程度编号排列，每条含定性标题、用户原话、量化数据与行为证据，另产出现有工具缺口表并给出需求真伪初判，每条洞察附真实出处链接、A/B/C 证据等级，AI 轨道时含评测种子。当用户说"帮我挖用户声音"、"看看用户对 X 都在吐槽什么"、"这个需求是真的吗"、"帮我做用户调研"时使用。正处于 Vibe_helper 全流程时按该流程走，无需单独触发。English: mine competitor reviews and real community discussions, cross-checked with academic studies, into severity-ranked numbered pain points with quotes, quantified evidence and behavior evidence, plus a tool-gap table and a demand-realness verdict. Use when the user asks "what do users complain about X", "is this demand real", or "do user research"; inside the Vibe_helper pipeline it runs as part of that flow.
 ---
 
 # User Voice：用户声音挖掘
@@ -20,18 +20,20 @@ description: 挖掘竞品评论，含差评与好评，与目标用户在 Reddit
 
 ## 深度档位，开场确认，默认标准
 
-| 档位 | 渠道数 | 范围 |
+档位管**来源覆盖广度**，不管报告骨架：快速档也要有痛点排序、工具缺口表与数据来源列表。
+
+| 档位 | 来源类别数 | 范围 |
 |---|---|---|
-| 快速 | 2 | 竞品评论区加 1 个社区，够做需求真伪初判 |
-| 标准，默认 | 4 | 评论区、技术社区、中文社区加 GitHub Issues |
-| 深度 | 6+ | 标准范围，加中英文社区，加抱怨的时间线对比 |
+| 快速 | 2 类 | 吐槽平台加 1 类，够做需求真伪初判 |
+| 标准，默认 | 4 类 | 学术实证研究、竞品评论区、技术社区、中文社区 |
+| 深度 | 5 类全含 | 加官方媒体与黑客松报告、GitHub Issues，加抱怨的时间线对比 |
 
 ## 步骤
 
-1. **按渠道搜**：来源优先级与搜索词模板见 `references/user-research.md`，从 App Store、Google Play、Chrome Web Store、G2，到 Reddit、HN、V2EX、即刻，再到知乎、小红书、GitHub Issues
-2. **真读帖子**：每个引用的帖子与评论本轮真实打开，转述与原帖不符即违规
-3. **按主题归类提炼**，不是逐条罗列：反复抱怨，≥3 独立来源即高优机会；自发夸的点；**workaround**，用户在用什么凑合，那就是直接竞争对手；付费意愿信号。判断信不信看**行为证据**：有人付费或花时间绕过即需求为真；只有嘴上说想要即存疑
-4. **写报告** `04-用户声音.md`：第一屏决策面板，然后机会点含证据、行为证据、对我们的启示，价值点，空白点，**需求真伪初判**，用户原话摘录，**评测种子，AI 轨道时，用户被坑过的真实输入即评测集主干用例**，最后待核实清单。好、坏洞察对照见 references
+1. **按五类来源搜**：来源优先级与搜索词模板见 `references/user-research.md`。学术实证研究（arXiv、期刊，一条量化数字抵百条吐槽，标准档起必查）→ 竞品评论区 → 技术社区 → 中文社区 → 官方媒体与黑客松报告、GitHub Issues
+2. **真读帖子**：每个引用的帖子与评论本轮真实打开，转述与原帖不符即违规；学术数字当场核对原文
+3. **按主题归类提炼**，不是逐条罗列：反复抱怨，≥3 独立来源即高优机会，有量化佐证等级上调；自发夸的点；**workaround**，用户在用什么凑合，那就是直接竞争对手；付费意愿信号。判断信不信看**行为证据**：有人付费或花时间绕过即需求为真；只有嘴上说想要即存疑
+4. **写报告** `04-用户声音.md`：**痛点呈现格式对照金标准 `references/report-examples/金标准-用户痛点调研.md`**。第一屏决策面板含最强量化数字，然后摘要、调研方法与数据来源、**痛点分析**（按严重程度编号排列，每条四件套：定性标题、用户原话引述、量化数据或明确写无、行为证据，且写明去向）、次要场景痛点、价值点、空白点、**现有工具缺口表**（现有方案/能做什么/关键缺口，至少含通用大模型与手动凑合方案）、**需求真伪初判**，用户原话摘录，**评测种子，AI 轨道时，用户被坑过的真实输入即评测集主干用例**，最后待核实清单与**编号数据来源列表**。好、坏洞察对照见 references
 5. **汇报时给判断**：需求真伪初判必须给，结论为真需求、存疑或假需求，附 A/B/C 证据等级。如果证据指向"没人讨论、没人凑合、没人付钱"，**明确说出来**。单独使用本 skill 时的产出就是"这个方向值不值得做"的证据包
 
 ## 证据分级与幻觉显性化纪律
@@ -47,6 +49,8 @@ description: 挖掘竞品评论，含差评与好评，与目标用户在 Reddit
 - **只看差评**：用户为什么留下来即价值点，决定我们不能丢什么
 - **忽略中文或英文一边**：两边用户抱怨的维度常不同
 - **AI 轨道漏标评测种子**：用户被坑过的真实输入是评测集最珍贵的主干用例，想象输入全是 C 级不许充数
+- **报告结构不对照金标准**：痛点不按严重程度编号、标题无信息量、量化数据缺失且不声明、缺工具缺口表或数据来源列表；骨架不分档，快速档也不豁免
+- **痛点写完没去向**：每条痛点要么指向功能候选，要么进待核实清单，不许沉底
 - **修改已确认报告不更新版本**：补挖或修改 04 必须版本加 1 并加变更行，版本头规则见报告模板顶部
 - **语言不跟用户**：调研汇报与文档正文要用用户的语言
 
